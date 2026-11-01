@@ -6,6 +6,7 @@
     "description": "Makes switching between versions easier by adding quality and audio language information to the names in Jellyfin's version selector, e.g. 'EN-NL' becomes 'EN-NL · 1080p · English, Dutch'. Labels are built from a configurable template and appear in every Jellyfin app. Nothing is renamed on disk or in the database.",
     "owner": "EdwardLecock",
     "category": "General",
+    "imageUrl": "https://raw.githubusercontent.com/EdwardLecock/jellyfin-plugins/main/VersionLabels/Jellyfin.Plugin.VersionLabels/VersionLabels.png",
     "versions": [
       {
         "version": "1.0.0.0",

@@ -1,11 +1,8 @@
-*This is a fork of [Atilil/jellyfin-plugins](https://github.com/Atilil/jellyfin-plugins) with a JellyTag fix for multi-version items and the additional Version Labels plugin.*
-
-*Upstream status: Active development is temporarily paused while I deepen my understanding of the codebase. The project is not abandoned.
-see [#17](https://github.com/Atilil/jellyfin-plugins/issues/17) for the full context.*
-
-# Jellyfin Plugins by Atilili
+# Jellyfin Plugins by EdwardLecock
 
 A collection of plugins for Jellyfin media server.
+
+This repository started as a fork of [Atilil/jellyfin-plugins](https://github.com/Atilil/jellyfin-plugins). It is now maintained here, with a JellyTag fix for items with multiple versions and the new Version Labels plugin.
 
 ## Installation
 
@@ -60,6 +57,10 @@ Automatically adds quality resolution badges (4K, 1080p, 720p, SD) to your media
 
 ### Version Labels
 
+<p align="center">
+    <img src="VersionLabels/Jellyfin.Plugin.VersionLabels/VersionLabels.png" />
+</p>
+
 Adds quality and audio language information to the names in Jellyfin's version selector, so switching between versions is easier. For example `EN-NL` becomes `EN-NL · 1080p · English, Dutch`. Works in every Jellyfin app.
 
 **Features:**
@@ -82,10 +83,14 @@ MIT License - see [LICENSE](LICENSE) file.
 
 ## Author
 
-**Atilili**
+**EdwardLecock**
+
+### Credits
+
+WatchSync and JellyTag were originally created by **Atilili** in [Atilil/jellyfin-plugins](https://github.com/Atilil/jellyfin-plugins).
 
 ---
 
 ## Disclaimer
 
-This project was developed with the assistance of AI (Claude by Anthropic). The code has been reviewed, tested, and validated before publication.
+This project was developed with the assistance of AI (Claude by Anthropic).
