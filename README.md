@@ -1,4 +1,6 @@
-*Status: Active development is temporarily paused while I deepen my understanding of the codebase. The project is not abandoned.
+*This is a fork of [Atilil/jellyfin-plugins](https://github.com/Atilil/jellyfin-plugins) with a JellyTag fix for multi-version items and the additional Version Labels plugin.*
+
+*Upstream status: Active development is temporarily paused while I deepen my understanding of the codebase. The project is not abandoned.
 see [#17](https://github.com/Atilil/jellyfin-plugins/issues/17) for the full context.*
 
 # Jellyfin Plugins by Atilili
@@ -9,8 +11,8 @@ A collection of plugins for Jellyfin media server.
 
 1. Open Jellyfin and go to **Administration → Dashboard → Plugins → Repositories**
 2. Click **Add** and enter:
-   - **Name:** `Atilili Plugins`
-   - **URL:** `https://raw.githubusercontent.com/Atilil/jellyfin-plugins/main/manifest.json`
+   - **Name:** `EdwardLecock Plugins`
+   - **URL:** `https://raw.githubusercontent.com/EdwardLecock/jellyfin-plugins/main/manifest.json`
 3. Click **Save**
 4. Go to **Catalog** tab and install the plugins you want
 5. Restart Jellyfin
@@ -53,6 +55,19 @@ Automatically adds quality resolution badges (4K, 1080p, 720p, SD) to your media
 - Works on all clients (web, mobile, TV, Kodi)
 
 [More details](Jellytag/README.md)
+
+---
+
+### Version Labels
+
+Adds quality and audio language information to the names in Jellyfin's version selector, so switching between versions is easier. For example `EN-NL` becomes `EN-NL · 1080p · English, Dutch`. Works in every Jellyfin app.
+
+**Features:**
+- Configurable label template with placeholders (resolution, HDR, codecs, audio languages, subtitles, size)
+- Presets and a live preview on the settings page
+- Nothing is renamed on disk or in the database
+
+[More details](VersionLabels/README.md)
 
 ---
 

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Version Labels</title>
+</head>
+<body>
+    <div id="VersionLabelsConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-checkbox">
+        <style>
+            .vl-table { width: 100%; border-collapse: collapse; margin: .5em 0 1em; }
+            .vl-table td { padding: .35em .6em; border-bottom: 1px solid rgba(255,255,255,.08); vertical-align: top; }
+            .vl-table code { background: rgba(255,255,255,.08); padding: .1em .35em; border-radius: .2em; cursor: pointer; }
+            .vl-presets { display: flex; flex-wrap: wrap; gap: .5em; margin: .5em 0 1.5em; }
+            .vl-presets button { background: rgba(255,255,255,.1); color: inherit; border: 1px solid rgba(255,255,255,.15); border-radius: .3em; padding: .4em .8em; cursor: pointer; font: inherit; }
+            .vl-presets button:hover { background: rgba(0,164,220,.4); }
+            .vl-box { border: 1px solid rgba(255,255,255,.12); border-radius: .4em; padding: 1em 1.2em; margin: 1.5em 0; }
+            .vl-search-wrap { position: relative; }
+            .vl-results { position: absolute; z-index: 10; left: 0; right: 0; background: #202020; border: 1px solid rgba(255,255,255,.15); border-radius: .3em; display: none; max-height: 16em; overflow-y: auto; }
+            .vl-results div { padding: .5em .8em; cursor: pointer; }
+            .vl-results div:hover { background: rgba(0,164,220,.4); }
+            .vl-preview-list { list-style: none; padding: 0; margin: .8em 0 0; }
+            .vl-preview-list li { padding: .5em .8em; margin-bottom: .3em; background: rgba(255,255,255,.06); border-radius: .3em; }
+            .vl-muted { color: #aaa; font-size: .9em; }
+        </style>
+        <div data-role="content">
+            <div class="content-primary">
+                <form id="VersionLabelsConfigForm">
+                    <h2>Version Labels</h2>
+                    <p class="vl-muted">Adds quality and audio language information to the names shown in the version selector, in every Jellyfin app.</p>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label>
+                            <input is="emby-checkbox" type="checkbox" id="Enabled" />
+                            <span>Enabled</span>
+                        </label>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label>
+                            <input is="emby-checkbox" type="checkbox" id="OnlyWhenMultipleVersions" />
+                            <span>Only relabel items that have more than one version</span>
+                        </label>
+                    </div>
+
+                    <div class="inputContainer">
+                        <input is="emby-input" type="text" id="Template" label="Label template" />
+                        <div class="fieldDescription">Placeholders that turn out empty are removed together with their separator.</div>
+                    </div>
+
+                    <div class="vl-muted">Presets:</div>
+                    <div class="vl-presets">
+                        <button type="button" data-template="{name} · {resolution} {hdr} · {languages}">Name · quality · languages</button>
+                        <button type="button" data-template="{resolution} {hdr} · {languages}">Quality · languages</button>
+                        <button type="button" data-template="{name} [{resolution}] {languagecodes}">Compact</button>
+                        <button type="button" data-template="{name} · {resolution} {hdr} {videocodec} · {audiocodec} {channels} · {languages} · {size}">Detailed</button>
+                    </div>
+
+                    <table class="vl-table">
+                        <tr><td><code>{name}</code></td><td>Jellyfin's own version name (usually from the filename, e.g. "EN-NL")</td></tr>
+                        <tr><td><code>{resolution}</code></td><td>4K, 1080p, 720p, SD</td></tr>
+                        <tr><td><code>{hdr}</code></td><td>DV, HDR10+, HDR10, HLG, HDR (empty for SDR)</td></tr>
+                        <tr><td><code>{videocodec}</code></td><td>HEVC, H.264, AV1, ...</td></tr>
+                        <tr><td><code>{audiocodec}</code></td><td>Codec of the default audio track: TrueHD Atmos, DTS-HD MA, DD+, AAC, ...</td></tr>
+                        <tr><td><code>{channels}</code></td><td>Channels of the default audio track: 7.1, 5.1, Stereo, Mono</td></tr>
+                        <tr><td><code>{languages}</code></td><td>All audio languages: English, Dutch</td></tr>
+                        <tr><td><code>{languagecodes}</code></td><td>All audio languages as codes: ENG/DUT</td></tr>
+                        <tr><td><code>{defaultlanguage}</code></td><td>Language of the default audio track</td></tr>
+                        <tr><td><code>{subtitles}</code></td><td>All subtitle languages</td></tr>
+                        <tr><td><code>{size}</code></td><td>File size</td></tr>
+                    </table>
+
+                    <button is="emby-button" type="submit" class="raised button-submit block"><span>Save</span></button>
+
+                    <div class="vl-box">
+                        <h3 style="margin-top:0;">Preview</h3>
+                        <div class="vl-search-wrap">
+                            <div class="inputContainer" style="margin-bottom:0;">
+                                <input is="emby-input" type="text" id="PreviewSearch" label="Search for a movie or episode" autocomplete="off" />
+                            </div>
+                            <div class="vl-results" id="PreviewResults"></div>
+                        </div>
+                        <div class="vl-muted" style="margin-top:.8em;">Saves the current settings, then shows the version names exactly as the apps will receive them.</div>
+                        <div id="PreviewTitle" style="margin-top:1em;font-weight:600;"></div>
+                        <ul class="vl-preview-list" id="PreviewList"></ul>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script type="text/javascript">
+        (function () {
+            var pluginId = 'a596220a-7b1e-40c4-825f-ba2ced546da8';
+            var page = document.querySelector('#VersionLabelsConfigPage');
+            var previewItem = null;
+
+            function collect(config) {
+                config.Enabled = page.querySelector('#Enabled').checked;
+                config.OnlyWhenMultipleVersions = page.querySelector('#OnlyWhenMultipleVersions').checked;
+                config.Template = page.querySelector('#Template').value;
+                return config;
+            }
+
+            function save() {
+                return ApiClient.getPluginConfiguration(pluginId).then(function (config) {
+                    return ApiClient.updatePluginConfiguration(pluginId, collect(config));
+                });
+            }
+
+            page.addEventListener('pageshow', function () {
+                Dashboard.showLoadingMsg();
+                ApiClient.getPluginConfiguration(pluginId).then(function (config) {
+                    page.querySelector('#Enabled').checked = config.Enabled;
+                    page.querySelector('#OnlyWhenMultipleVersions').checked = config.OnlyWhenMultipleVersions;
+                    page.querySelector('#Template').value = config.Template || '';
+                    Dashboard.hideLoadingMsg();
+                });
+            });
+
+            page.querySelector('#VersionLabelsConfigForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+                Dashboard.showLoadingMsg();
+                save().then(function (result) {
+                    Dashboard.processPluginConfigurationUpdateResult(result);
+                    refreshPreview();
+                });
+                return false;
+            });
+
+            page.querySelectorAll('.vl-presets button').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    page.querySelector('#Template').value = btn.getAttribute('data-template');
+                    refreshPreview();
+                });
+            });
+
+            page.querySelectorAll('.vl-table code').forEach(function (code) {
+                code.title = 'Click to add to the template';
+                code.addEventListener('click', function () {
+                    var input = page.querySelector('#Template');
+                    input.value = (input.value ? input.value + ' ' : '') + code.textContent;
+                    input.focus();
+                });
+            });
+
+            // Preview
+            var searchInput = page.querySelector('#PreviewSearch');
+            var results = page.querySelector('#PreviewResults');
+            var searchTimer = null;
+
+            searchInput.addEventListener('input', function () {
+                clearTimeout(searchTimer);
+                var q = searchInput.value.trim();
+                if (q.length < 2) { results.style.display = 'none'; return; }
+                searchTimer = setTimeout(function () {
+                    ApiClient.getItems(ApiClient.getCurrentUserId(), {
+                        SearchTerm: q, IncludeItemTypes: 'Movie,Episode', Recursive: true, Limit: 10
+                    }).then(function (res) {
+                        results.innerHTML = '';
+                        (res.Items || []).forEach(function (item) {
+                            var div = document.createElement('div');
+                            div.textContent = (item.SeriesName ? item.SeriesName + ' - ' : '') + item.Name + (item.ProductionYear ? ' (' + item.ProductionYear + ')' : '');
+                            div.addEventListener('click', function () {
+                                previewItem = { id: item.Id, title: div.textContent };
+                                results.style.display = 'none';
+                                searchInput.value = '';
+                                refreshPreview();
+                            });
+                            results.appendChild(div);
+                        });
+                        if (!res.Items || res.Items.length === 0) {
+                            results.innerHTML = '<div class="vl-muted">No results</div>';
+                        }
+                        results.style.display = 'block';
+                    });
+                }, 300);
+            });
+
+            document.addEventListener('click', function (e) {
+                if (!results.contains(e.target) && e.target !== searchInput) results.style.display = 'none';
+            });
+
+            function refreshPreview() {
+                if (!previewItem) return;
+                var list = page.querySelector('#PreviewList');
+                page.querySelector('#PreviewTitle').textContent = previewItem.title;
+                list.innerHTML = '<li class="vl-muted">Loading...</li>';
+                save().then(function () {
+                    return ApiClient.getItem(ApiClient.getCurrentUserId(), previewItem.id);
+                }).then(function (item) {
+                    list.innerHTML = '';
+                    var sources = item.MediaSources || [];
+                    if (sources.length === 0) {
+                        list.innerHTML = '<li class="vl-muted">This item has no versions.</li>';
+                    }
+                    sources.forEach(function (s) {
+                        var li = document.createElement('li');
+                        li.textContent = s.Name;
+                        list.appendChild(li);
+                    });
+                    if (sources.length === 1 && page.querySelector('#OnlyWhenMultipleVersions').checked) {
+                        var note = document.createElement('li');
+                        note.className = 'vl-muted';
+                        note.textContent = 'Only one version, so the name is left unchanged.';
+                        list.appendChild(note);
+                    }
+                    Dashboard.hideLoadingMsg();
+                }).catch(function (err) {
+                    list.innerHTML = '<li class="vl-muted">Preview failed: ' + (err && err.message ? err.message : err) + '</li>';
+                    Dashboard.hideLoadingMsg();
+                });
+            }
+        })();
+        </script>
+    </div>
+</body>
+</html>

@@ -1,5 +1,23 @@
 [
   {
+    "guid": "a596220a-7b1e-40c4-825f-ba2ced546da8",
+    "name": "Version Labels",
+    "overview": "Adds resolution, HDR and audio languages to the names in the version selector",
+    "description": "Makes switching between versions easier by adding quality and audio language information to the names in Jellyfin's version selector, e.g. 'EN-NL' becomes 'EN-NL · 1080p · English, Dutch'. Labels are built from a configurable template and appear in every Jellyfin app. Nothing is renamed on disk or in the database.",
+    "owner": "EdwardLecock",
+    "category": "General",
+    "versions": [
+      {
+        "version": "1.0.0.0",
+        "changelog": "Initial release: configurable version labels with resolution, HDR, codecs, audio languages, subtitles and size",
+        "targetAbi": "10.11.0.0",
+        "sourceUrl": "https://github.com/EdwardLecock/jellyfin-plugins/releases/download/versionlabels-1.0.0.0/versionlabels-1.0.0.0.zip",
+        "checksum": "16500cb9a80a7b0b524f7bf4e428e20e",
+        "timestamp": "2026-11-01T00:00:00Z"
+      }
+    ]
+  },
+  {
     "guid": "aa4fe598-07fd-41b5-bf1d-65abab9980db",
     "name": "WatchSync",
     "overview": "Sync watch history between libraries of different qualities (4K/HD)",
