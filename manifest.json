@@ -28,6 +28,14 @@
     "imageUrl": "https://raw.githubusercontent.com/Atilil/jellyfin-plugins/main/Jellytag/Jellyfin.Plugin.JellyTag/JellyTag.png",
     "versions": [
       {
+        "version": "2.0.3.0",
+        "changelog": "Fix: detect badges across all versions of an item (merged/alternate versions), so e.g. language flags from every version are shown",
+        "targetAbi": "10.11.0.0",
+        "sourceUrl": "https://github.com/EdwardLecock/jellyfin-plugins/releases/download/jellytag-2.0.3.0/jellytag-2.0.3.0.zip",
+        "checksum": "f8439416c10e76a11a3bc7e775909399",
+        "timestamp": "2026-11-01T00:00:00Z"
+      },
+      {
         "version": "2.0.2.0",
         "changelog": "Fix: exclude SkiaSharp native assets that caused plugin loading crash, pin Jellyfin packages to 10.11.0 for full 10.11.x compatibility",
         "targetAbi": "10.11.0.0",
